@@ -32,6 +32,8 @@ public class Automaton {
 
     private Transition[] cachedTransitions = null;
 
+    private State[] cachedFinalStates = null;
+
     public Automaton() {
         states = new HashSet<State>();
         transitions = new HashSet<Transition>();
@@ -47,6 +49,23 @@ public class Automaton {
         cachedStates = null;
     }
 
+    public void removeState(State state) {
+        for (Transition transition : getTransitionsFromState(state)) {
+            removeTransition(transition);
+        }
+        for (Transition transition : getTransitionsToState(state)) {
+            removeTransition(transition);
+        }
+        transitionFromStateMap.remove(state);
+        transitionToStateMap.remove(state);
+        if (isInitialState(state)) {
+            initialState = null;
+        }
+        finalStates.remove(state);
+        states.remove(state);
+        cachedStates = null;
+    }
+
     protected final void addTranstion(Transition transition) {
         if (transitions.contains(transition)) {
             return;
@@ -59,8 +78,44 @@ public class Automaton {
         cachedTransitions = null;
     }
 
+    public void removeTransition(Transition transition) {
+        transitions.remove(transition);
+        List transitionsFromState = (List) transitionFromStateMap.get(transition.getFrom());
+        transitionsFromState.remove(transition);
+        List transitionsToState = (List) transitionToStateMap.get(transition.getTo());
+        transitionsToState.remove(transition);
+        cachedTransitions = null;
+    }
+
     public void setInitialState(State initialState) {
         this.initialState = initialState;
+    }
+
+    public State getInitialState() {
+        return initialState;
+    }
+
+    public boolean isInitialState(State state) {
+        return initialState.equals(state);
+    }
+
+    public void addFinalState(State state) {
+        finalStates.add(state);
+    }
+
+    public void removeFinalState(State state) {
+        finalStates.remove(state);
+    }
+
+    public State[] getFinalStates() {
+        if (cachedFinalStates == null) {
+            cachedFinalStates = (State[]) finalStates.toArray();
+        }
+        return cachedFinalStates;
+    }
+
+    public boolean isFinalState(State state) {
+        return finalStates.contains(state);
     }
 
     public State[] getStates() {

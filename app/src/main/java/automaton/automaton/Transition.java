@@ -16,10 +16,25 @@ public class Transition {
     // 转移的标签
     private String label;
 
-
     public Transition(State from, State to) {
         uuid = UUID.randomUUID();
         this.from = from;
         this.to = to;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public State getFrom() {
+        return from;
+    }
+
+    public State getTo() {
+        return to;
     }
 }

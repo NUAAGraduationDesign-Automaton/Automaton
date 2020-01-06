@@ -43,7 +43,7 @@ git checkout -b <你的分支名>
 
 比如你修改了 A 文件，或者添加了 B 文件，这时候你使用 `git status` 命令可以查看当前仓库你有哪些为提交的文件修改。
 
-举个例子，我现在这个 `git.md` 是新加的
+举个例子，我现在这个 `git.md` 是在新建文件夹 `docs` 下的
 
 ```
 git status
@@ -58,4 +58,52 @@ Untracked files:
 nothing added to commit but untracked files present (use "git add" to track)
 ```
 
-可以看到我新建了一个叫做 `git-doc` 的分支，
+可以看到我新建了一个叫做 `git-doc` 的分支，又一个 `docs` 文件夹的修改没有被提交，需要使用 `git add` 来跟踪
+
+你通过 `git add docs/` 来添加，当有多个文件时，你可以 `git add A B C`，也可以通过 `git add .` 来提交全部
+
+添加完以后再使用 `git status` 查看当前状态，输出如下：
+
+```
+On branch git-doc
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        new file:   docs/git.md
+```
+
+这时候你需要使用 `git commit` 来提交记录，完成的命令是
+
+```
+git commit -m "<这次提交的说明>"
+
+# 比如：git commit -m "添加了关于 git 的文档"
+```
+
+这是 commit 后的输出
+
+```
+[git-doc 3589fb3] 添加了关于 git 的文档
+ 1 file changed, 61 insertions(+)
+ create mode 100644 docs/git.md
+```
+
+提交完以后，你需要提交到远端的 github，需要使用 `git push` 命令，完整的如下
+
+```
+# 如果你这个分支之前还没有 push 到远端
+git push --set-upstream origin <远端分支名（一般与本地保持一致）>
+# 比如：git push --set-upstream origin git-doc
+
+# 如果你的分支之前已经 push 过了
+git push
+```
+
+这时候你就能在 github 上看到你的分支和提交记录
+
+![](./git1.png)
+
+## git 简易教程推荐
+
+- [廖雪峰的 git 教程](https://www.liaoxuefeng.com/wiki/896043488029600)
+- [猴子都能懂的 GIT 入门](https://backlog.com/git-tutorial/cn/)

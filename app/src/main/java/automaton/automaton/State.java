@@ -25,4 +25,8 @@ public class State {
     public void setName(String name) {
         this.name = name;
     }
+        
+    public Automaton getAutomaton() {
+        return automaton;
+    }
 }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Automaton</string>
+    <string name="title_activity_navi">NaviActivity</string>
+    <string name="title_fsa">有穷自动机</string>
+    <string name="title_turing">图灵机</string>
+    <string name="title_regular">正则</string>
 </resources>

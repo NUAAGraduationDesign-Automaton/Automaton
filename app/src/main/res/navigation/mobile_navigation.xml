@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_fsa">
+
+    <fragment
+        android:id="@+id/navigation_fsa"
+        android:name="com.example.automaton.ui.fsa.FSAFragment"
+        android:label="@string/title_fsa"
+        tools:layout="@layout/fragment_fsa" />
+
+    <fragment
+        android:id="@+id/navigation_turing"
+        android:name="com.example.automaton.ui.turing.TuringFragment"
+        android:label="@string/title_turing"
+        tools:layout="@layout/fragment_turing" />
+
+    <fragment
+        android:id="@+id/navigation_regular"
+        android:name="com.example.automaton.ui.regular.RegularFragment"
+        android:label="@string/title_regular"
+        tools:layout="@layout/fragment_regular" />
+</navigation>

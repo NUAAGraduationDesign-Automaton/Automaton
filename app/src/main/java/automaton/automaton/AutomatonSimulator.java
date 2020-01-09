@@ -7,24 +7,24 @@ public abstract class AutomatonSimulator {
 
     private Automaton automaton;
 
-    private HashSet<Configuration> configurations;
+    protected HashSet<Configuration> configurations;
 
     public AutomatonSimulator(Automaton automaton) {
         this.automaton = automaton;
-        this.configurations = new HashSet<Configuration>();
+        this.configurations = new HashSet<>();
     }
 
-    public abstract boolean simulateInput();
+    public abstract boolean simulateInput(String input);
 
     public abstract boolean isAccepted();
 
-    public abstract ArrayList stepConfiguraion();
+    public abstract ArrayList stepConfiguraion(Configuration configuration);
 
     public Automaton getAutomaton() {
         return automaton;
     }
 
-    public HashSet<Configuration> getConfigurations() {
+    protected HashSet<Configuration> getConfigurations() {
         return configurations;
     }
 }

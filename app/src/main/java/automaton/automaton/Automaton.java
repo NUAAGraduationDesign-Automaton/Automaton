@@ -24,9 +24,9 @@ public class Automaton {
     // 自动机的初始状态
     private State initialState;
 
-    private HashMap transitionFromStateMap = new HashMap();
+    private HashMap<State, LinkedList<Transition>> transitionFromStateMap = new HashMap<>();
 
-    private HashMap transitionToStateMap = new HashMap();
+    private HashMap<State, LinkedList<Transition>> transitionToStateMap = new HashMap<>();
 
     private State[] cachedStates = null;
 
@@ -35,18 +35,24 @@ public class Automaton {
     private State[] cachedFinalStates = null;
 
     public Automaton() {
-        states = new HashSet<State>();
-        transitions = new HashSet<Transition>();
-        finalStates = new HashSet<State>();
+        states = new HashSet<>();
+        transitions = new HashSet<>();
+        finalStates = new HashSet<>();
         initialState = null;
         uuid = UUID.randomUUID();
     }
 
-    protected final void addState(State state) {
+    private void addState(State state) {
         states.add(state);
         transitionFromStateMap.put(state, new LinkedList<Transition>());
         transitionToStateMap.put(state, new LinkedList<Transition>());
         cachedStates = null;
+    }
+
+    public final void addStates(State[] states) {
+        for (State state : states) {
+            addState(state);
+        }
     }
 
     public void removeState(State state) {
@@ -66,24 +72,38 @@ public class Automaton {
         cachedStates = null;
     }
 
-    protected final void addTranstion(Transition transition) {
+    public final void addTransition(Transition transition) {
         if (transitions.contains(transition)) {
             return;
         }
         transitions.add(transition);
-        List transitionsFromState = (List) transitionFromStateMap.get(transition.getFrom());
-        List transitionsToState = (List) transitionToStateMap.get(transition.getTo());
-        transitionsFromState.add(transition);
-        transitionsToState.add(transition);
+        List<Transition> transitionsFromState = transitionFromStateMap.get(transition.getFrom());
+        List<Transition> transitionsToState = transitionToStateMap.get(transition.getTo());
+        if (transitionsFromState != null) {
+            transitionsFromState.add(transition);
+        }
+        if (transitionsToState != null) {
+            transitionsToState.add(transition);
+        }
         cachedTransitions = null;
     }
 
-    public void removeTransition(Transition transition) {
+    public final void addTransitions(Transition[] transitions) {
+        for (Transition transition : transitions) {
+            addTransition(transition);
+        }
+    }
+
+    private void removeTransition(Transition transition) {
         transitions.remove(transition);
-        List transitionsFromState = (List) transitionFromStateMap.get(transition.getFrom());
-        transitionsFromState.remove(transition);
-        List transitionsToState = (List) transitionToStateMap.get(transition.getTo());
-        transitionsToState.remove(transition);
+        List<Transition> transitionsFromState = transitionFromStateMap.get(transition.getFrom());
+        if (transitionsFromState != null) {
+            transitionsFromState.remove(transition);
+        }
+        List<Transition> transitionsToState = transitionToStateMap.get(transition.getTo());
+        if (transitionsToState != null) {
+            transitionsToState.remove(transition);
+        }
         cachedTransitions = null;
     }
 
@@ -95,7 +115,7 @@ public class Automaton {
         return initialState;
     }
 
-    public boolean isInitialState(State state) {
+    private boolean isInitialState(State state) {
         return initialState.equals(state);
     }
 
@@ -126,18 +146,24 @@ public class Automaton {
     }
 
     public Transition[] getTransitionsFromState(State from) {
-        List transitionsFromState = (List) transitionFromStateMap.get(from);
-        return (Transition[]) transitionsFromState.toArray();
+        List<Transition> list = transitionFromStateMap.get(from);
+        if (list != null) {
+            return list.toArray(new Transition[0]);
+        }
+        return new Transition[1];
     }
 
-    public Transition[] getTransitionsToState(State to) {
-        List transitionsToState = (List) transitionToStateMap.get(to);
-        return (Transition[]) transitionsToState.toArray();
+    private Transition[] getTransitionsToState(State to) {
+        List<Transition> list = transitionToStateMap.get(to);
+        if (list != null) {
+            return list.toArray(new Transition[0]);
+        }
+        return new Transition[1];
     }
 
     public Transition[] getTransitionsFromStateToState(State from, State to) {
         Transition[] transitionsFromState = getTransitionsFromState(from);
-        ArrayList list = new ArrayList();
+        ArrayList<Transition> list = new ArrayList<>();
         for (Transition transition : transitionsFromState) {
             if (transition.getTo().equals(to)) {
                 list.add(transition);

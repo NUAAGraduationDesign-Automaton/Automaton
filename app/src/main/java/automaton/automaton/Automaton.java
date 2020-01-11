@@ -129,7 +129,7 @@ public class Automaton {
 
     public State[] getFinalStates() {
         if (cachedFinalStates == null) {
-            cachedFinalStates = (State[]) finalStates.toArray();
+            cachedFinalStates = finalStates.toArray(new State[0]);
         }
         return cachedFinalStates;
     }
@@ -138,9 +138,9 @@ public class Automaton {
         return finalStates.contains(state);
     }
 
-    public State[] getStates() {
+    State[] getStates() {
         if (cachedStates == null) {
-            cachedStates = (State[]) states.toArray();
+            cachedStates = states.toArray(new State[0]);
         }
         return cachedStates;
     }

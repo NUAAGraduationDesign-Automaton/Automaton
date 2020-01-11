@@ -29,7 +29,7 @@ public abstract class NondeterminismDetector {
                 }
             }
         }
-        return list.toArray(new State[1]);
+        return list.toArray(new State[0]);
     }
 
 }

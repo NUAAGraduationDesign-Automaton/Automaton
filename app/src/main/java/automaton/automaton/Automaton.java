@@ -138,7 +138,7 @@ public class Automaton {
         return finalStates.contains(state);
     }
 
-    State[] getStates() {
+    public State[] getStates() {
         if (cachedStates == null) {
             cachedStates = states.toArray(new State[0]);
         }

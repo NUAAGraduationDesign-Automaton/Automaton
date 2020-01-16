@@ -174,7 +174,7 @@ public class Automaton {
 
     public Transition[] getTransitions() {
         if (cachedTransitions == null) {
-            cachedTransitions = (Transition[]) transitions.toArray();
+            cachedTransitions = transitions.toArray(new Transition[0]);
         }
         return cachedTransitions;
     }

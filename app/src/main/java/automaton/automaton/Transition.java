@@ -37,4 +37,9 @@ public class Transition {
     public State getTo() {
         return to;
     }
+
+    public int specialHash() {
+        int hash = from == to ? from.specialHash() : from.specialHash() ^ to.specialHash();
+        return hash;
+    }
 }

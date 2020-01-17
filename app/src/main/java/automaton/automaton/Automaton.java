@@ -3,11 +3,12 @@ package automaton.automaton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-public class Automaton {
+public class Automaton implements Cloneable {
 
     // 唯一标识
     private UUID uuid;
@@ -42,7 +43,46 @@ public class Automaton {
         uuid = UUID.randomUUID();
     }
 
-    private void addState(State state) {
+    public Automaton clone() {
+        Automaton a;
+        try {
+            a = getClass().newInstance();
+        } catch (Throwable e) {
+            System.err.println("clone of automaton failed!");
+            return null;
+        }
+        HashMap map = new HashMap();
+        Iterator it = states.iterator();
+        while (it.hasNext()) {
+            State state = (State) it.next();
+            State stateCopy = new State(state.getAutomaton());
+            stateCopy.setName(state.getName());
+            map.put(state, stateCopy);
+            a.addState(stateCopy);
+        }
+
+        it = finalStates.iterator();
+        while (it.hasNext()) {
+            State state = (State) it.next();
+            a.addFinalState((State) map.get(state));
+        }
+        a.setInitialState((State) map.get(initialState));
+
+        it = states.iterator();
+        while (it.hasNext()) {
+            State state = (State) it.next();
+            Transition[] transitions = getTransitionsFromState(state);
+            State from = (State) map.get(state);
+            for (Transition transition : transitions) {
+                State to = (State) map.get(transition.getTo());
+                Transition transitionCopy = new Transition(from, to);
+                a.addTransition(transitionCopy);
+            }
+        }
+        return a;
+    }
+
+    public void addState(State state) {
         states.add(state);
         transitionFromStateMap.put(state, new LinkedList<Transition>());
         transitionToStateMap.put(state, new LinkedList<Transition>());
@@ -86,6 +126,15 @@ public class Automaton {
             transitionsToState.add(transition);
         }
         cachedTransitions = null;
+    }
+
+    public State getStateWithName(String name) {
+        for (State state : states) {
+            if (state.getName().equals(name)) {
+                return state;
+            }
+        }
+        return null;
     }
 
     public final void addTransitions(Transition[] transitions) {
@@ -177,5 +226,19 @@ public class Automaton {
             cachedTransitions = transitions.toArray(new Transition[0]);
         }
         return cachedTransitions;
+    }
+
+    @Override
+    public int hashCode() {
+        int ret = 0;
+        for (State state : states) {
+            ret += state.specialHash();
+        }
+        for (Transition transition : transitions) {
+            ret += transition.specialHash();
+        }
+        ret += finalStates.hashCode();
+        ret += initialState == null ? 0 : (int)(initialState.specialHash() * Math.PI);
+        return ret;
     }
 }

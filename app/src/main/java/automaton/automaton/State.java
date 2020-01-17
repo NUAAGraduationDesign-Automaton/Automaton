@@ -29,4 +29,8 @@ public class State {
     public Automaton getAutomaton() {
         return automaton;
     }
+
+    public int specialHash() {
+        return name == null ? -1 : name.hashCode();
+    }
 }

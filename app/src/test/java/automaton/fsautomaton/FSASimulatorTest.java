@@ -30,4 +30,10 @@ public class FSASimulatorTest {
         FSASimulator simulator = new FSASimulator(AutomatonCreator.getCreator().getNormalFSA());
         assertTrue(simulator.simulateInput("000000000101"));
     }
+
+    @Test
+    public void nfaToDfaTestAutomatonIsApproved() {
+        FSASimulator simulator = new FSASimulator(AutomatonCreator.getCreator().getNfaToDFATestFSA());
+        assertTrue(simulator.simulateInput("aaab"));
+    }
 }

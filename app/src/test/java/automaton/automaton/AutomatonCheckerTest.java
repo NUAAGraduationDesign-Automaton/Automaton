@@ -16,4 +16,10 @@ public class AutomatonCheckerTest {
         AutomatonChecker checker = new AutomatonChecker();
         assertFalse(checker.isNFA(AutomatonCreator.getCreator().getNormalFSA()));
     }
+
+    @Test
+    public void nfaToDfaTestAutomatonIsNFA() {
+        AutomatonChecker checker = new AutomatonChecker();
+        assertTrue(checker.isNFA(AutomatonCreator.getCreator().getNfaToDFATestFSA()));
+    }
 }

@@ -15,4 +15,12 @@ public class FSAAlphabetRetrieverTest {
         String[] alphabet = alphabetRetriever.getAlphabet(easyFSA);
         assertArrayEquals(alphabet, new String[]{"a"});
     }
+
+    @Test
+    public void nfaToDfaTestAutomatonAlphabetRetrieverTest() {
+        Automaton nfaToDfaTestAutomaton = AutomatonCreator.getCreator().getNfaToDFATestFSA();
+        FSAAlphabetRetriever alphabetRetriever = new FSAAlphabetRetriever();
+        String[] alphabet = alphabetRetriever.getAlphabet(nfaToDfaTestAutomaton);
+        assertArrayEquals(alphabet, new String[]{"a", "b"});
+    }
 }

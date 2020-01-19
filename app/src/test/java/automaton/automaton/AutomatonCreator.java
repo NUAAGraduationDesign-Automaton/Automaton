@@ -1,5 +1,7 @@
 package automaton.automaton;
 
+import java.util.ArrayList;
+
 import automaton.fsautomaton.FiniteStateAutomaton;
 
 public class AutomatonCreator {
@@ -8,6 +10,8 @@ public class AutomatonCreator {
     private FiniteStateAutomaton easyFSA;
 
     private FiniteStateAutomaton normalFSA;
+
+    private FiniteStateAutomaton nfaToDFATestFSA;
 
     public FiniteStateAutomaton getEasyFSA() {
         if (easyFSA == null) {
@@ -48,6 +52,50 @@ public class AutomatonCreator {
             normalFSA.addFinalState(state1);
         }
         return normalFSA;
+    }
+
+    public FiniteStateAutomaton getNfaToDFATestFSA() {
+        if (nfaToDFATestFSA == null) {
+            nfaToDFATestFSA = new FiniteStateAutomaton();
+            ArrayList<State> statesList = new ArrayList();
+            for (int i = 0; i < 10; i++) {
+                State state = new State(nfaToDFATestFSA);
+                statesList.add(state);
+                nfaToDFATestFSA.addState(state);
+            }
+            Transition transition1 = new Transition(statesList.get(0), statesList.get(1));
+            transition1.setLabel("");
+            Transition transition2 = new Transition(statesList.get(0), statesList.get(7));
+            transition2.setLabel("");
+            Transition transition3 = new Transition(statesList.get(1), statesList.get(2));
+            transition3.setLabel("");
+            Transition transition4 = new Transition(statesList.get(1), statesList.get(4));
+            transition4.setLabel("");
+            Transition transition5 = new Transition(statesList.get(2), statesList.get(3));
+            transition5.setLabel("a");
+            Transition transition6 = new Transition(statesList.get(3), statesList.get(6));
+            transition6.setLabel("");
+            Transition transition7 = new Transition(statesList.get(4), statesList.get(5));
+            transition7.setLabel("b");
+            Transition transition8 = new Transition(statesList.get(5), statesList.get(6));
+            transition8.setLabel("");
+            Transition transition9 = new Transition(statesList.get(6), statesList.get(7));
+            transition9.setLabel("");
+            Transition transition10 = new Transition(statesList.get(6), statesList.get(1));
+            transition10.setLabel("");
+            Transition transition11 = new Transition(statesList.get(7), statesList.get(8));
+            transition11.setLabel("a");
+            Transition transition12 = new Transition(statesList.get(8), statesList.get(9));
+            transition12.setLabel("b");
+            nfaToDFATestFSA.addTransitions(new Transition[]{
+                    transition1, transition2, transition3, transition4, transition5,
+                    transition6, transition7, transition8, transition9, transition10,
+                    transition11, transition12
+            });
+            nfaToDFATestFSA.setInitialState(statesList.get(0));
+            nfaToDFATestFSA.addFinalState(statesList.get(9));
+        }
+        return nfaToDFATestFSA;
     }
 
     private AutomatonCreator() {

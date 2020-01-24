@@ -19,7 +19,7 @@ public class AutomatonCreator {
             State state1 = new State(easyFSA);
             State state2 = new State(easyFSA);
             Transition transition1 = new Transition(state1, state2);
-            transition1.setLabel("a");
+            transition1.setLabel("");
             easyFSA.addStates(new State[]{state1, state2});
             easyFSA.addTransition(transition1);
             easyFSA.setInitialState(state1);
@@ -61,6 +61,7 @@ public class AutomatonCreator {
             for (int i = 0; i < 10; i++) {
                 State state = new State(nfaToDFATestFSA);
                 statesList.add(state);
+                state.setName("s" + i);
                 nfaToDFATestFSA.addState(state);
             }
             Transition transition1 = new Transition(statesList.get(0), statesList.get(1));

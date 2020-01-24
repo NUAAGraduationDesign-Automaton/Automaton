@@ -13,7 +13,7 @@ public class FSAAlphabetRetrieverTest {
         Automaton easyFSA = AutomatonCreator.getCreator().getEasyFSA();
         FSAAlphabetRetriever alphabetRetriever = new FSAAlphabetRetriever();
         String[] alphabet = alphabetRetriever.getAlphabet(easyFSA);
-        assertArrayEquals(alphabet, new String[]{"a"});
+        assertArrayEquals(alphabet, new String[]{});
     }
 
     @Test

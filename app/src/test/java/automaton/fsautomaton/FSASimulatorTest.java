@@ -16,7 +16,7 @@ public class FSASimulatorTest {
     @Test
     public void easyFiniteStateAutomatonIsApproved() {
         FSASimulator simulator = new FSASimulator(AutomatonCreator.getCreator().getEasyFSA());
-        assertTrue(simulator.simulateInput("a"));
+        assertTrue(simulator.simulateInput(""));
     }
 
     @Test

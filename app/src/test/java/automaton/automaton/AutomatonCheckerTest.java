@@ -6,9 +6,9 @@ import static org.junit.Assert.*;
 
 public class AutomatonCheckerTest {
     @Test
-    public void easyFiniteStateAutomatonIsNotNFA() {
+    public void easyFiniteStateAutomatonIsNFA() {
         AutomatonChecker checker = new AutomatonChecker();
-        assertFalse(checker.isNFA(AutomatonCreator.getCreator().getEasyFSA()));
+        assertTrue(checker.isNFA(AutomatonCreator.getCreator().getEasyFSA()));
     }
 
     @Test

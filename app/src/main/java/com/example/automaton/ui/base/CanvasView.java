@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.example.automaton.model.StateCircle;
@@ -24,11 +25,14 @@ public class CanvasView extends View {
     private int MAX_YAXIS = 400;
     private int max_x = CIRCLE_MARGIN + CIRCLE_RADIUS;
     private int max_y = CIRCLE_MARGIN + CIRCLE_RADIUS;
+    private float oldScale = 1;
     private float currentScale = 1;
     private ObjectAnimator bigAnimator;
     private ObjectAnimator smallAnimator;
     private float canvasScaleOffsetX = 0;
     private float canvasScaleOffsetY = 0;
+    private float MIN_SCALE = 1;
+    private float MAX_SCALE = 2;
     private boolean isScaled = false;
 
     Context context;
@@ -86,9 +90,31 @@ public class CanvasView extends View {
                 }
             });
 
+            private ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
+                @Override
+                public boolean onScale(ScaleGestureDetector detector) {
+                    currentScale = oldScale * detector.getScaleFactor();
+                    currentScale = Math.max(currentScale, MIN_SCALE);
+                    currentScale = Math.min(currentScale, MAX_SCALE);
+                    invalidate();
+                    return false;
+                }
+
+                @Override
+                public boolean onScaleBegin(ScaleGestureDetector detector) {
+                    oldScale = currentScale;
+                    return true;
+                }
+
+                @Override
+                public void onScaleEnd(ScaleGestureDetector detector) {
+                }
+            });
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 gestureDetector.onTouchEvent(event);
+                scaleGestureDetector.onTouchEvent(event);
                 return true;
             }
         });

@@ -1,12 +1,14 @@
 package com.example.automaton.ui.base;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.example.automaton.model.StateCircle;
 
@@ -21,13 +23,30 @@ public class CanvasView extends View {
     private int MAX_YAXIS = 400;
     private int max_x = CIRCLE_MARGIN + CIRCLE_RADIUS;
     private int max_y = CIRCLE_MARGIN + CIRCLE_RADIUS;
+    private float currentScale = 1;
+    private ObjectAnimator bigAnimator;
 
     Context context;
     private ArrayList<StateCircle> stateCircles = new ArrayList<>();
 
-    public CanvasView(Context context, AttributeSet attrs) {
+    public CanvasView(final Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        this.setOnTouchListener(new OnTouchListener() {
+            private GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    getBigAnimator().start();
+                    return super.onDoubleTap(e);
+                }
+            });
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.BLACK);
@@ -39,6 +58,7 @@ public class CanvasView extends View {
     protected void onDraw(Canvas canvas) {
         mCanvas = canvas;
         super.onDraw(canvas);
+        canvas.scale(currentScale, currentScale);
         for (StateCircle stateCircle : stateCircles) {
             canvas.drawCircle(stateCircle.xPosition, stateCircle.yPosition, stateCircle.radius, mPaint);
         }
@@ -47,6 +67,7 @@ public class CanvasView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+
     }
 
     public void drawStatesCircle(int count) {
@@ -59,6 +80,19 @@ public class CanvasView extends View {
             }
             stateCircles.add(new StateCircle(max_x, max_y, CIRCLE_RADIUS));
         }
+        invalidate();
+    }
+
+    public ObjectAnimator getBigAnimator() {
+        if (bigAnimator == null) {
+            bigAnimator = ObjectAnimator.ofFloat(this, "currentScale", currentScale, 2);
+        }
+        bigAnimator.setFloatValues(currentScale, 2);
+        return bigAnimator;
+    }
+
+    public void setCurrentScale(float currentScale) {
+        this.currentScale = currentScale;
         invalidate();
     }
 }

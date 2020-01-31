@@ -1,5 +1,6 @@
 package com.example.automaton.ui.base;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -25,6 +26,10 @@ public class CanvasView extends View {
     private int max_y = CIRCLE_MARGIN + CIRCLE_RADIUS;
     private float currentScale = 1;
     private ObjectAnimator bigAnimator;
+    private ObjectAnimator smallAnimator;
+    private float canvasScaleOffsetX = 0;
+    private float canvasScaleOffsetY = 0;
+    private boolean isScaled = false;
 
     Context context;
     private ArrayList<StateCircle> stateCircles = new ArrayList<>();
@@ -32,21 +37,7 @@ public class CanvasView extends View {
     public CanvasView(final Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        this.setOnTouchListener(new OnTouchListener() {
-            private GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onDoubleTap(MotionEvent e) {
-                    getBigAnimator().start();
-                    return super.onDoubleTap(e);
-                }
-            });
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                gestureDetector.onTouchEvent(event);
-                return true;
-            }
-        });
+        setTouchListener();
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(Color.BLACK);
@@ -58,7 +49,7 @@ public class CanvasView extends View {
     protected void onDraw(Canvas canvas) {
         mCanvas = canvas;
         super.onDraw(canvas);
-        canvas.scale(currentScale, currentScale);
+        canvas.scale(currentScale, currentScale, canvasScaleOffsetX, canvasScaleOffsetY);
         for (StateCircle stateCircle : stateCircles) {
             canvas.drawCircle(stateCircle.xPosition, stateCircle.yPosition, stateCircle.radius, mPaint);
         }
@@ -68,6 +59,31 @@ public class CanvasView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
+    }
+
+    private void setTouchListener() {
+        this.setOnTouchListener(new OnTouchListener() {
+            private GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    if (isScaled) {
+                        getSmallAnimator().start();
+                    } else {
+                        canvasScaleOffsetX = e.getX();
+                        canvasScaleOffsetY = e.getY();
+                        getBigAnimator().start();
+                    }
+                    isScaled = !isScaled;
+                    return super.onDoubleTap(e);
+                }
+            });
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
     }
 
     public void drawStatesCircle(int count) {
@@ -89,6 +105,30 @@ public class CanvasView extends View {
         }
         bigAnimator.setFloatValues(currentScale, 2);
         return bigAnimator;
+    }
+
+    public ObjectAnimator getSmallAnimator() {
+        if (smallAnimator == null) {
+            smallAnimator = ObjectAnimator.ofFloat(this, "currentScale", currentScale, 1);
+            smallAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) { }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    canvasScaleOffsetX = 0;
+                    canvasScaleOffsetY = 0;
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) { }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) { }
+            });
+        }
+        smallAnimator.setFloatValues(currentScale, 1);
+        return smallAnimator;
     }
 
     public void setCurrentScale(float currentScale) {

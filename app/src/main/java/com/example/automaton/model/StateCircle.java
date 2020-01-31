@@ -8,9 +8,10 @@ public class StateCircle {
     public int radius;
     public State state;
 
-    public StateCircle(int xPosition, int yPosition, int radius) {
+    public StateCircle(int xPosition, int yPosition, int radius, State state) {
         this.xPosition = xPosition;
         this.yPosition = yPosition;
         this.radius = radius;
+        this.state = state;
     }
 }

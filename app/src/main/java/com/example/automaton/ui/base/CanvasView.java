@@ -16,25 +16,35 @@ import com.example.automaton.model.StateCircle;
 
 import java.util.ArrayList;
 
+import automaton.automaton.Automaton;
+import automaton.automaton.State;
+
 public class CanvasView extends View {
-    static int CIRCLE_RADIUS = 30;
-    static int CIRCLE_MARGIN = 20;
-    private Paint mPaint;
-    private static Canvas mCanvas;
-    private int MAX_XAXIS = this.getResources().getDisplayMetrics().widthPixels;
-    private int MAX_YAXIS = 400;
+    // Circle Props
+    static int CIRCLE_RADIUS = 60;
+    static int CIRCLE_MARGIN = 60;
     private int max_x = CIRCLE_MARGIN + CIRCLE_RADIUS;
     private int max_y = CIRCLE_MARGIN + CIRCLE_RADIUS;
+    private int currentCount = 0;
+    // Paints
+    private Paint circlePaint;
+    private Paint textPaint;
+    // Constants
+    private int MAX_XAXIS = this.getResources().getDisplayMetrics().widthPixels;
+    private int MAX_YAXIS = 400;
+    private float MIN_SCALE = 1;
+    private float MAX_SCALE = 2;
+    // Gestures Props
     private float oldScale = 1;
     private float currentScale = 1;
     private ObjectAnimator bigAnimator;
     private ObjectAnimator smallAnimator;
     private float canvasScaleOffsetX = 0;
     private float canvasScaleOffsetY = 0;
-    private float MIN_SCALE = 1;
-    private float MAX_SCALE = 2;
     private boolean isScaled = false;
-
+    // Automaton
+    private Automaton automaton = new Automaton();
+    // Others
     Context context;
     private ArrayList<StateCircle> stateCircles = new ArrayList<>();
 
@@ -42,27 +52,35 @@ public class CanvasView extends View {
         super(context, attrs);
         this.context = context;
         setTouchListener();
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(3);
+        circlePaint = new Paint();
+        circlePaint.setAntiAlias(true);
+        circlePaint.setColor(Color.BLACK);
+        circlePaint.setStyle(Paint.Style.STROKE);
+        circlePaint.setStrokeWidth(3);
+        textPaint = new Paint();
+        textPaint.setAntiAlias(true);
+        textPaint.setStyle(Paint.Style.FILL);
+        textPaint.setTextSize(48);
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        textPaint.setStrokeWidth(3);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        mCanvas = canvas;
         super.onDraw(canvas);
         canvas.scale(currentScale, currentScale, canvasScaleOffsetX, canvasScaleOffsetY);
         for (StateCircle stateCircle : stateCircles) {
-            canvas.drawCircle(stateCircle.xPosition, stateCircle.yPosition, stateCircle.radius, mPaint);
+            canvas.drawCircle(stateCircle.xPosition, stateCircle.yPosition, stateCircle.radius, circlePaint);
+            String stateName = stateCircle.state.getName();
+            float textX = stateCircle.xPosition - stateName.length() * 48 / 4;
+            float textY = stateCircle.yPosition + 48 / 4;
+            canvas.drawText(stateCircle.state.getName(), textX, textY, textPaint);
         }
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-
     }
 
     private void setTouchListener() {
@@ -128,8 +146,11 @@ public class CanvasView extends View {
             } else {
                 max_x += CIRCLE_RADIUS * 2 + CIRCLE_MARGIN;
             }
-            stateCircles.add(new StateCircle(max_x, max_y, CIRCLE_RADIUS));
+            State newState = new State(automaton);
+            newState.setName("s" + (currentCount + i));
+            stateCircles.add(new StateCircle(max_x, max_y, CIRCLE_RADIUS, newState));
         }
+        currentCount = count;
         invalidate();
     }
 

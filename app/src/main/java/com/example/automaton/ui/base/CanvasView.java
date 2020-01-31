@@ -76,6 +76,14 @@ public class CanvasView extends View {
                     isScaled = !isScaled;
                     return super.onDoubleTap(e);
                 }
+
+                @Override
+                public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                    canvasScaleOffsetX += distanceX;
+                    canvasScaleOffsetY += distanceY;
+                    invalidate();
+                    return super.onScroll(e1, e2, distanceX, distanceY);
+                }
             });
 
             @Override
